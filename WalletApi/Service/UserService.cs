@@ -12,6 +12,18 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<User> CreateUser(string username)
+    {
+        var userEntity = await _userRepository.CreateUserAsync(username);
+        
+        return new User
+        {
+            Id = userEntity.Id,
+            Username = userEntity.Username,
+            Balance = userEntity.Balance
+        };
+    }
+
     public async Task<User?> GetById(int id)
     {
         var userEntity = await _userRepository.GetUserByIdAsync(id);

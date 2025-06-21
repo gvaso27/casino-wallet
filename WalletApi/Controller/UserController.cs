@@ -15,6 +15,24 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDto)
+    {
+        if (string.IsNullOrWhiteSpace(createUserDto.Username))
+            return BadRequest("Username is required");
+
+        var user = await _userService.CreateUser(createUserDto.Username);
+        
+        var userDto = new UserDTO
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Balance = user.Balance
+        };
+
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, userDto);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {

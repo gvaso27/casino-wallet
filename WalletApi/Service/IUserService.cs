@@ -4,7 +4,9 @@ namespace WalletApi.Service;
 
 public interface IUserService
 {
-    
+
+    Task<User> CreateUser(string username);
+
     Task<User?> GetById(int id);
 
 }

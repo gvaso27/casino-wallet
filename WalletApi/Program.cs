@@ -18,6 +18,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated(); // Creates tables if they don't exist
+}
+
 // Middleware pipeline
 if (app.Environment.IsDevelopment())
 {

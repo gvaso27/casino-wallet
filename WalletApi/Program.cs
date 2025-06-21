@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WalletApi.Data;
 using WalletApi.Repository;
 using WalletApi.Service;
+using WalletApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ if (app.Environment.IsDevelopment())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.EnsureCreated(); // Creates tables if they don't exist
 }
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Middleware pipeline
 if (app.Environment.IsDevelopment())

@@ -39,4 +39,10 @@ public class UserRepository
         return await _context.Users.FindAsync(id);
     }
 
+    public async Task<List<UserEntity>> GetAllUsersAsync()
+    {
+        return await _context.Users.ToListAsync();
+    }
+
+
 }

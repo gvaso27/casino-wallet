@@ -53,15 +53,42 @@ public class UserController : ControllerBase
 
         return Ok(userDto);
     }
-    
-    [HttpPut]
+
+    [HttpPut("add-funds")]
     public async Task<IActionResult> AddFunds([FromBody] AddFundsDTO addFundsDTO)
     {
         if (addFundsDTO.Amount <= 0.0)
             return BadRequest("amount should be greater than zero");
 
-        await _userService.addFunds(addFundsDTO.Id, addFundsDTO.Amount);
-        
+        await _userService.AddFunds(addFundsDTO.Id, addFundsDTO.Amount);
+
         return Ok("Funds added successfully");
     }
+
+    [HttpPut("withdraw-funds")]
+    public async Task<IActionResult> WithdrawFunds([FromBody] WithdrawFundsDTO withdrawFundsDTO)
+    {
+        if (withdrawFundsDTO.Amount <= 0.0)
+            return BadRequest("amount should be greater than zero");
+
+        await _userService.WithdrawFunds(withdrawFundsDTO.Id, withdrawFundsDTO.Amount);
+
+        return Ok("Funds was withdrawn successfully");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userService.GetAllUsers();
+
+        var userDtos = users.Select(user => new UserDTO
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Balance = user.Balance
+        }).ToList();
+
+        return Ok(userDtos);
+    }
+
 }

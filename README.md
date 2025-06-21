@@ -16,11 +16,11 @@ This is a .NET 8 Web API project for a **Casino Wallet System**, designed for ma
 ## 📸 UI screens
 
 <p align="center">
-  <img src="UIPictures/1.png" alt="Sign in"/>
-  <img src="UIPictures/2.png" alt="Chat"/>
-  <img src="UIPictures/3.png" alt="Profile Page 1"/>
-  <img src="UIPictures/4.png" alt="Profile Page 1"/>
-  <img src="UIPictures/5.png" alt="Take Quizz"/>
+  <img src="UIPictures/1.png"/>
+  <img src="UIPictures/2.png"/>
+  <img src="UIPictures/3.png"/>
+  <img src="UIPictures/4.png"/>
+  <img src="UIPictures/5.png"/>
 </p>
 
 ---

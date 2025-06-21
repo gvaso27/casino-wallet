@@ -6,10 +6,20 @@ using WalletApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -29,13 +39,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
+app.UseCors("AllowAll");
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
 

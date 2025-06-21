@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .api-config {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .api-config h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .api-config input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(79, 172, 254, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            background: #f8fff9;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .response.error {
+            border-left-color: #dc3545;
+            background: #fff8f8;
+        }
+
+        .user-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4facfe;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .user-card p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .balance {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .history-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4facfe;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Wallet Management System</h1>
+            <p>Manage users, balances, and transactions with ease</p>
+        </div>
+
+        <div class="main-content">
+            <div class="api-config">
+                <h3>🔧 API Configuration</h3>
+                <input type="text" id="apiBaseUrl" placeholder="Enter API Base URL (e.g., http://localhost:5216/api)" value="http://localhost:5216/api">
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('create-user')">👤 Create User</button>
+                <button class="tab" onclick="showTab('view-users')">👥 View Users</button>
+                <button class="tab" onclick="showTab('user-details')">🔍 User Details</button>
+                <button class="tab" onclick="showTab('manage-funds')">💳 Manage Funds</button>
+            </div>
+
+            <!-- Create User Tab -->
+            <div id="create-user" class="tab-content active">
+                <h2>Create New User</h2>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder="Enter username">
+                </div>
+                <button class="btn" onclick="createUser()">Create User</button>
+                <div id="create-response" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- View Users Tab -->
+            <div id="view-users" class="tab-content">
+                <h2>All Users</h2>
+                <button class="btn" onclick="getAllUsers()">Refresh Users List</button>
+                <div id="users-list" class="user-list"></div>
+            </div>
+
+            <!-- User Details Tab -->
+            <div id="user-details" class="tab-content">
+                <h2>User Details</h2>
+                <div class="form-group">
+                    <label for="userIdDetails">User ID:</label>
+                    <input type="number" id="userIdDetails" placeholder="Enter user ID">
+                </div>
+                <button class="btn" onclick="getUserDetails()">Get User Details</button>
+                <div id="user-details-response" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Manage Funds Tab -->
+            <div id="manage-funds" class="tab-content">
+                <h2>Manage Funds</h2>
+                
+                <h3>Add Funds</h3>
+                <div class="form-group">
+                    <label for="addFundsUserId">User ID:</label>
+                    <input type="number" id="addFundsUserId" placeholder="Enter user ID">
+                </div>
+                <div class="form-group">
+                    <label for="addAmount">Amount:</label>
+                    <input type="number" id="addAmount" step="0.01" placeholder="Enter amount to add">
+                </div>
+                <button class="btn" onclick="addFunds()">Add Funds</button>
+                <div id="add-funds-response" class="response" style="display: none;"></div>
+
+                <hr style="margin: 30px 0; border: none; height: 1px; background: #e0e0e0;">
+
+                <h3>Withdraw Funds</h3>
+                <div class="form-group">
+                    <label for="withdrawFundsUserId">User ID:</label>
+                    <input type="number" id="withdrawFundsUserId" placeholder="Enter user ID">
+                </div>
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount:</label>
+                    <input type="number" id="withdrawAmount" step="0.01" placeholder="Enter amount to withdraw">
+                </div>
+                <button class="btn" onclick="withdrawFunds()">Withdraw Funds</button>
+                <div id="withdraw-funds-response" class="response" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const getApiBaseUrl = () => document.getElementById('apiBaseUrl').value.trim();
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function showResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+            element.className = isError ? 'response error' : 'response';
+        }
+
+        function showLoading(buttonElement) {
+            const loadingSpinner = document.createElement('span');
+            loadingSpinner.className = 'loading';
+            buttonElement.appendChild(loadingSpinner);
+            buttonElement.disabled = true;
+        }
+
+        function hideLoading(buttonElement) {
+            const loading = buttonElement.querySelector('.loading');
+            if (loading) loading.remove();
+            buttonElement.disabled = false;
+        }
+
+        async function createUser() {
+            const button = event.target;
+            const username = document.getElementById('username').value.trim();
+            
+            if (!username) {
+                showResponse('create-response', 'Please enter a username', true);
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/User`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: username })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResponse('create-response', `User created successfully!\n${JSON.stringify(data, null, 2)}`);
+                    document.getElementById('username').value = '';
+                } else {
+                    showResponse('create-response', `Error: ${data.message || JSON.stringify(data)}`, true);
+                }
+            } catch (error) {
+                showResponse('create-response', `Network error: ${error.message}`, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        async function getAllUsers() {
+            const button = event.target;
+            showLoading(button);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/User`);
+                const users = await response.json();
+
+                if (response.ok) {
+                    const usersList = document.getElementById('users-list');
+                    if (users.length === 0) {
+                        usersList.innerHTML = '<p>No users found.</p>';
+                    } else {
+                        usersList.innerHTML = users.map(user => `
+                            <div class="user-card">
+                                <h4>👤 ${user.username}</h4>
+                                <p><strong>ID:</strong> ${user.id}</p>
+                                <p class="balance"><strong>Balance:</strong> $${user.balance.toFixed(2)}</p>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    document.getElementById('users-list').innerHTML = `<p class="error">Error loading users: ${users.message || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('users-list').innerHTML = `<p class="error">Network error: ${error.message}</p>`;
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        async function getUserDetails() {
+            const button = event.target;
+            const userId = document.getElementById('userIdDetails').value;
+            
+            if (!userId) {
+                showResponse('user-details-response', 'Please enter a user ID', true);
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/User/${userId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    let details = `User Details:\n`;
+                    details += `ID: ${data.id}\n`;
+                    details += `Username: ${data.username}\n`;
+                    details += `Balance: $${data.balance.toFixed(2)}\n`;
+                    
+                    if (data.history && data.history.length > 0) {
+                        details += `\nTransaction History:\n`;
+                        data.history.forEach((transaction, index) => {
+                            details += `${index + 1}. Type: ${transaction.type}, Balance: $${transaction.balance.toFixed(2)}, Date: ${new Date(transaction.timestamp).toLocaleString()}\n`;
+                        });
+                    } else {
+                        details += `\nNo transaction history available.`;
+                    }
+                    
+                    showResponse('user-details-response', details);
+                } else {
+                    showResponse('user-details-response', `Error: ${data.message || JSON.stringify(data)}`, true);
+                }
+            } catch (error) {
+                showResponse('user-details-response', `Network error: ${error.message}`, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        async function addFunds() {
+            const button = event.target;
+            const userId = document.getElementById('addFundsUserId').value;
+            const amount = parseFloat(document.getElementById('addAmount').value);
+            
+            if (!userId || !amount || amount <= 0) {
+                showResponse('add-funds-response', 'Please enter valid user ID and amount', true);
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/User/add-funds`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: parseInt(userId), amount: amount })
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    showResponse('add-funds-response', `Success: ${data}`);
+                    document.getElementById('addFundsUserId').value = '';
+                    document.getElementById('addAmount').value = '';
+                } else {
+                    showResponse('add-funds-response', `Error: ${data}`, true);
+                }
+            } catch (error) {
+                showResponse('add-funds-response', `Network error: ${error.message}`, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        async function withdrawFunds() {
+            const button = event.target;
+            const userId = document.getElementById('withdrawFundsUserId').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            
+            if (!userId || !amount || amount <= 0) {
+                showResponse('withdraw-funds-response', 'Please enter valid user ID and amount', true);
+                return;
+            }
+
+            showLoading(button);
+
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/User/withdraw-funds`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: parseInt(userId), amount: amount })
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    showResponse('withdraw-funds-response', `Success: ${data}`);
+                    document.getElementById('withdrawFundsUserId').value = '';
+                    document.getElementById('withdrawAmount').value = '';
+                } else {
+                    showResponse('withdraw-funds-response', `Error: ${data}`, true);
+                }
+            } catch (error) {
+                showResponse('withdraw-funds-response', `Network error: ${error.message}`, true);
+            } finally {
+                hideLoading(button);
+            }
+        }
+
+        // Load users on page load
+        window.addEventListener('load', () => {
+            getAllUsers();
+        });
+    </script>
+</body>
+</html>

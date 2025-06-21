@@ -1,0 +1,45 @@
+## Build artifacts
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code
+.vscode/
+.history/
+
+## ASP.NET logs
+*.log
+
+## .NET secrets
+secrets.json
+
+## EF Core Migrations snapshot
+Migrations/*Snapshot.cs
+
+## Dependency directories
+packages/
+.nuget/
+*.nupkg
+
+## DB/SQLite
+*.db
+*.mdf
+*.ldf
+
+## Rider
+.idea/
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Environment
+.env
+
+## Others
+*.http

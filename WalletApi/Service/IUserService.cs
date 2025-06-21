@@ -9,6 +9,8 @@ public interface IUserService
 
     Task<User?> GetById(int id);
 
+    Task<double> GetBalanceById(int id);
+
     Task<bool> AddFunds(int id, double amount);
 
     Task<bool> WithdrawFunds(int id, double amount);

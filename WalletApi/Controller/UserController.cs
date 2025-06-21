@@ -60,6 +60,21 @@ public class UserController : ControllerBase
         return Ok(userDto);
     }
 
+    [HttpGet("balance/{id}")]
+    public async Task<IActionResult> GetBalanceById(int id)
+    {
+        if (id <= 0)
+            return BadRequest("User ID must be greater than 0");
+
+        double balance = await _userService.GetBalanceById(id);
+
+        if (balance == -1)
+            return NotFound($"User with ID {id} not found");
+
+
+        return Ok(balance);
+    }
+
     [HttpPut("add-funds")]
     public async Task<IActionResult> AddFunds([FromBody] AddFundsDTO addFundsDTO)
     {

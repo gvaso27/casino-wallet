@@ -60,6 +60,18 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<double> GetBalanceById(int id)
+    {
+        var userEntity = await _userRepository.GetUserByIdAsync(id);
+        if (userEntity == null)
+        {
+            _logger.LogWarning("GetById: User with ID {UserId} not found", id);
+            return -1;
+        }
+
+        return userEntity.Balance;
+    }
+
     public async Task<bool> AddFunds(int id, double amount)
     {
         var userEntity = await _userRepository.GetUserByIdAsync(id);

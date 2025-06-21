@@ -18,11 +18,6 @@ This is a .NET 8 Web API project for a **Casino Wallet System**, designed for ma
 * [.NET SDK 8.0](https://dotnet.microsoft.com/en-us/download)
 * [PostgreSQL](https://www.postgresql.org/download/)
 * IDE like [Visual Studio](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/)
-* `dotnet-ef` CLI tool:
-
-  ```bash
-  dotnet tool install --global dotnet-ef
-  ```
 
 ---
 

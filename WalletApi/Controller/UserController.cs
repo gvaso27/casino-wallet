@@ -48,7 +48,13 @@ public class UserController : ControllerBase
         {
             Id = user.Id,
             Username = user.Username,
-            Balance = user.Balance
+            Balance = user.Balance,
+            History = user.History.Select(h => new TransactionHistoryDTO
+            {
+                Balance = h.Balance,
+                Type = h.Type.ToString(),
+                Timestamp = h.Timestamp
+            }).ToList()
         };
 
         return Ok(userDto);
@@ -60,7 +66,10 @@ public class UserController : ControllerBase
         if (addFundsDTO.Amount <= 0.0)
             return BadRequest("amount should be greater than zero");
 
-        await _userService.AddFunds(addFundsDTO.Id, addFundsDTO.Amount);
+        var success = await _userService.AddFunds(addFundsDTO.Id, addFundsDTO.Amount);
+
+        if (!success)
+            return NotFound($"User with ID {addFundsDTO.Id} not found");
 
         return Ok("Funds added successfully");
     }
@@ -71,7 +80,10 @@ public class UserController : ControllerBase
         if (withdrawFundsDTO.Amount <= 0.0)
             return BadRequest("amount should be greater than zero");
 
-        await _userService.WithdrawFunds(withdrawFundsDTO.Id, withdrawFundsDTO.Amount);
+        var success = await _userService.WithdrawFunds(withdrawFundsDTO.Id, withdrawFundsDTO.Amount);
+
+        if (!success)
+            return BadRequest($"Failed to withdraw funds. Either user with ID {withdrawFundsDTO.Id} not found or insufficient balance.");
 
         return Ok("Funds was withdrawn successfully");
     }
@@ -85,7 +97,8 @@ public class UserController : ControllerBase
         {
             Id = user.Id,
             Username = user.Username,
-            Balance = user.Balance
+            Balance = user.Balance,
+            
         }).ToList();
 
         return Ok(userDtos);

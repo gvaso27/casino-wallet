@@ -15,4 +15,6 @@ public class UserEntity
 
     [Required]
     public double Balance { get; set; } = 0.0;
+
+    public List<TransactionHistoryEntity> TransactionHistory { get; set; } = new();
 }

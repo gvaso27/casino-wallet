@@ -7,4 +7,6 @@ public class User
     public string Username { get; set; } = string.Empty;
 
     public double Balance { get; set; } = 0;
+
+     public List<TransactionHistory> History { get; set; } = new();
 }

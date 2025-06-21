@@ -21,6 +21,7 @@ This is a .NET 8 Web API project for a **Casino Wallet System**, designed for ma
   <img src="UIPictures/3.png"/>
   <img src="UIPictures/4.png"/>
   <img src="UIPictures/5.png"/>
+  <img src="UIPictures/6.png"/>
 </p>
 
 ---

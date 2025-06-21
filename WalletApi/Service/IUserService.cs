@@ -9,4 +9,6 @@ public interface IUserService
 
     Task<User?> GetById(int id);
 
+    Task<bool> addFunds(int id, double amount);
+
 }

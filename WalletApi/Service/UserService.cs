@@ -15,7 +15,7 @@ public class UserService : IUserService
     public async Task<User> CreateUser(string username)
     {
         var userEntity = await _userRepository.CreateUserAsync(username);
-        
+
         return new User
         {
             Id = userEntity.Id,
@@ -37,5 +37,16 @@ public class UserService : IUserService
             Username = userEntity.Username,
             Balance = userEntity.Balance
         };
+    }
+
+    public async Task<bool> addFunds(int id, double amount)
+    {
+        var userEntity = await _userRepository.GetUserByIdAsync(id);
+        if (userEntity == null) return false;
+
+        userEntity.Balance += amount;
+        await _userRepository.UpdateUserAsync(userEntity);
+        return true;
+
     }
 }

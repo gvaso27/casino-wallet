@@ -6,5 +6,5 @@ public class User
 
     public string Username { get; set; } = string.Empty;
 
-    public int Balance { get; set; } = 0;
+    public double Balance { get; set; } = 0;
 }

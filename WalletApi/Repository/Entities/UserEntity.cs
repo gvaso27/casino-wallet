@@ -14,5 +14,5 @@ public class UserEntity
     public string Username { get; set; } = string.Empty;
 
     [Required]
-    public int Balance { get; set; } = 0;
+    public double Balance { get; set; } = 0.0;
 }

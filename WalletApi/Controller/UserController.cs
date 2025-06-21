@@ -22,7 +22,7 @@ public class UserController : ControllerBase
             return BadRequest("Username is required");
 
         var user = await _userService.CreateUser(createUserDto.Username);
-        
+
         var userDto = new UserDTO
         {
             Id = user.Id,
@@ -52,5 +52,16 @@ public class UserController : ControllerBase
         };
 
         return Ok(userDto);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> AddFunds([FromBody] AddFundsDTO addFundsDTO)
+    {
+        if (addFundsDTO.Amount <= 0.0)
+            return BadRequest("amount should be greater than zero");
+
+        await _userService.addFunds(addFundsDTO.Id, addFundsDTO.Amount);
+        
+        return Ok("Funds added successfully");
     }
 }
